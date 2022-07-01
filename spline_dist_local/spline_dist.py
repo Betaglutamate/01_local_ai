@@ -1,9 +1,10 @@
 Notebook_version = '1.13.1'
 Network = 'SplineDist (2D)'
 
-Data_folder = "/home/betaglutamate/Documents/GitHub/cellpose_local/training_data/source"
-Results_folder = "/home/betaglutamate/Documents/GitHub/cellpose_local/content" #@param {type:"string"}
-Prediction_model_folder = "/home/betaglutamate/Documents/GitHub/cellpose_local/Chr_spline_model" #@param {type:"string"}
+root_dir = "/home/betaglutamate/Documents/GitHub/cellpose_local"
+Data_folder = "/home/betaglutamate/Documents/GitHub/cellpose_local/content/one_hour_incubation/images"
+Results_folder = "/home/betaglutamate/Documents/GitHub/cellpose_local/content/one_hour_incubation/result" 
+Prediction_model_folder = "/home/betaglutamate/Documents/GitHub/cellpose_local/Chr_spline_model" 
 
 
 import sys
@@ -18,9 +19,6 @@ from spline_local.splinedist.models import Config2D, SplineDist2D, SplineDistDat
 
 # ------- Variable specific to SplineDist -------
 from csbdeep.utils import Path, normalize
-from zipfile import ZIP_DEFLATED
-
-
 
 # ------- Common variable to all ZeroCostDL4Mic notebooks -------
 import numpy as np
@@ -36,44 +34,6 @@ from tqdm import tqdm
 import cv2
 
 
-def get_contoursize_percentile_from_path(target_path, percentile = 99, show_histogram = False):
-  # Percentile needs to be between 0 and 100
-  contoursize = []
-  Y_list = glob(target_path+"/*.tif") 
-  for y in tqdm(Y_list):
-    Y_im = imread(y)
-    Y_im = fill_label_holes(Y_im)
-    obj_list = np.unique(Y_im)
-    obj_list = obj_list[1:]  
-    
-    for j in range(len(obj_list)):  
-        mask_temp = Y_im.copy()     
-        mask_temp[mask_temp != obj_list[j]] = 0
-        mask_temp[mask_temp > 0] = 1
-        
-        mask_temp = mask_temp.astype(np.uint8)    
-        contours,_ = cv2.findContours(mask_temp, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-        perimeter = cv2.arcLength(contours[0],True)
-        contoursize = np.append(contoursize, perimeter)
-
-  contoursize_max = np.amax(contoursize)     
-  contoursize_percentile = np.percentile(contoursize, percentile)
-
-  if show_histogram:
-    # Histogram display
-    n, bins, patches = plt.hist(x=contoursize, bins='auto', color='#0504aa',
-                                alpha=0.7, rwidth=0.85)
-    plt.grid(axis='y', alpha=0.75)
-    plt.xlabel('Contour size')
-    plt.ylabel('Frequency')
-    plt.title('Contour size distribution')
-    plt.text(200, 300, r'$Max='+str(round(contoursize_max,2))+'$')
-    plt.text(200, 280, r'$'+str(percentile)+'th-per.='+str(round(contoursize_percentile,2))+'$')
-    maxfreq = n.max();
-    # Set a clean upper y-axis limit.
-    plt.ylim(ymax=np.ceil(maxfreq / 10) * 10 if maxfreq % 10 else maxfreq + 10);
-
-  return contoursize_percentile
 
 
 #Prediction
@@ -105,7 +65,7 @@ else:
 Nuclei_number = []
 
 for image in os.listdir(Data_folder):
-    os.chdir("/home/betaglutamate/Documents/GitHub/cellpose_local")
+    os.chdir(root_dir)
 
     print("Performing prediction on: "+image)
 
@@ -132,7 +92,7 @@ for image in os.listdir(Data_folder):
     img = normalize(X, 1,99.8, axis = axis_norm)    
     labels, details = model.predict_instances(img)    
 
-    os.chdir('/home/betaglutamate/Documents/GitHub/cellpose_local/content/test_results')
+    os.chdir(Results_folder)
 
     if Mask_images:
         imsave(str(short_name[0])+".tif", labels)
