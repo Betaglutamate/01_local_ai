@@ -1,10 +1,12 @@
+# open spline_dist_environment
+
 Notebook_version = '1.13.1'
 Network = 'SplineDist (2D)'
 
-root_dir = "/home/betaglutamate/Documents/GitHub/cellpose_local"
-Data_folder = "/home/betaglutamate/Documents/GitHub/cellpose_local/content/one_hour_incubation/images"
-Results_folder = "/home/betaglutamate/Documents/GitHub/cellpose_local/content/one_hour_incubation/result" 
-Prediction_model_folder = "/home/betaglutamate/Documents/GitHub/cellpose_local/Chr_spline_model" 
+root_dir = "/home/betaglutamate/Documents/GitHub/01_local_ai/spline_dist_local"
+Data_folder = "/home/betaglutamate/OneDrive/00_PhD/00_Phd_data/01_Project_ChrHansen/20220906_Freeze_dry_survival_cell_size/20220902_CHR_FD_NaCL/imagej_tif"
+Results_folder = "/home/betaglutamate/OneDrive/00_PhD/00_Phd_data/01_Project_ChrHansen/20220906_Freeze_dry_survival_cell_size/20220902_CHR_FD_NaCL/results" 
+Prediction_model_folder = "/home/betaglutamate/Documents/GitHub/01_local_ai/spline_dist_local/Chr_spline_model" 
 
 
 import sys
@@ -40,13 +42,6 @@ import cv2
 
 Mask_images = True 
 Tracking_file = False 
-
-
-# model name and path
-#@markdown ###Do you want to use the current trained model?
-Use_the_current_trained_model = False 
-
-#@markdown ###If not, please provide the path to the model folder:
 
 
 #Here we find the loaded model name and parent path
